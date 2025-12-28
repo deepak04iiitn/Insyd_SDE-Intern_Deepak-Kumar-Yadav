@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import stockRoutes from "./routes/stockRoutes.js";
 import { globalErrorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/stock", stockRoutes);
 
 // Global error handler 
 app.use(globalErrorHandler);
