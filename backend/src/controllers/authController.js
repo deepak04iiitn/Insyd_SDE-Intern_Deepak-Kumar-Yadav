@@ -48,6 +48,7 @@ export const register = async (req, res, next) => {
       email,
       password: hashedPassword,
       role: userRole,
+      isApproved: userRole === "admin", 
     });
 
     const token = generateToken(user._id);
@@ -56,13 +57,14 @@ export const register = async (req, res, next) => {
       success: true,
       message: isFirstUser
         ? "First admin user created successfully"
-        : "User registered successfully",
+        : "User registered successfully. Your account is pending admin approval.",
       data: {
         user: {
           id: user._id,
           name: user.name,
           email: user.email,
           role: user.role,
+          isApproved: user.isApproved,
         },
         token,
       },
@@ -110,6 +112,7 @@ export const login = async (req, res, next) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          isApproved: user.isApproved,
         },
         token,
       },
@@ -139,6 +142,7 @@ export const getMe = async (req, res, next) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          isApproved: user.isApproved,
         },
       },
     });
