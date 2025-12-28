@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import PreApprovedEmail from "../models/PreApprovedEmail.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import dotenv from 'dotenv';
@@ -41,6 +42,10 @@ export const register = async (req, res, next) => {
       userRole = "user";
     }
 
+    // Check if email is in pre-approved list
+    const preApprovedEmail = await PreApprovedEmail.findOne({ email: email.toLowerCase() });
+    const isPreApproved = !!preApprovedEmail;
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await User.create({
@@ -48,7 +53,7 @@ export const register = async (req, res, next) => {
       email,
       password: hashedPassword,
       role: userRole,
-      isApproved: userRole === "admin", 
+      isApproved: userRole === "admin" || isPreApproved, 
     });
 
     const token = generateToken(user._id);
@@ -57,6 +62,8 @@ export const register = async (req, res, next) => {
       success: true,
       message: isFirstUser
         ? "First admin user created successfully"
+        : isPreApproved
+        ? "User registered successfully. Your account has been automatically approved."
         : "User registered successfully. Your account is pending admin approval.",
       data: {
         user: {

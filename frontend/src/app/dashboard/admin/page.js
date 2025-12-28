@@ -14,6 +14,9 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [activeTab, setActiveTab] = useState("pending"); // "pending" or "all"
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [addingUser, setAddingUser] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     
@@ -84,16 +87,50 @@ export default function AdminPage() {
     }
   };
 
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    
+    if(!newUserEmail.trim()) {
+      setError("Please enter an email address");
+      return;
+    }
+
+    try {
+      setAddingUser(true);
+      setError(null);
+      setSuccess(null);
+
+      await adminService.addPreApprovedEmail(newUserEmail.trim());
+      setSuccess(`Email ${newUserEmail.trim()} has been added. User will be auto-approved when they register.`);
+      setNewUserEmail("");
+      setShowAddUserModal(false);
+      fetchUsers();
+
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add user email");
+    } finally {
+      setAddingUser(false);
+    }
+  };
+
   return (
     <ProtectedRoute requireAdmin={true}>
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="mx-auto max-w-7xl">
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-            <p className="mt-2 text-gray-600">
-              Manage user accounts and approvals
-            </p>
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+              <p className="mt-2 text-gray-600">
+                Manage user accounts and approvals
+              </p>
+            </div>
+            <button
+              onClick={() => setShowAddUserModal(true)}
+              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Add User
+            </button>
           </div>
 
           {success && (
@@ -292,6 +329,86 @@ export default function AdminPage() {
 
         </div>
       </div>
+
+      {showAddUserModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Add User</h2>
+              <button
+                onClick={() => {
+                  setShowAddUserModal(false);
+                  setNewUserEmail("");
+                  setError(null);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleAddUser}>
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={newUserEmail}
+                  onChange={(e) => setNewUserEmail(e.target.value)}
+                  placeholder="user@example.com"
+                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  required
+                  disabled={addingUser}
+                />
+                <p className="mt-2 text-sm text-gray-500">
+                  Users with this email will be automatically approved when they register.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddUserModal(false);
+                    setNewUserEmail("");
+                    setError(null);
+                  }}
+                  className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  disabled={addingUser}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                  disabled={addingUser}
+                >
+                  {addingUser ? "Adding..." : "Add User"}
+                </button>
+              </div>
+              
+            </form>
+          </div>
+        </div>
+      )}
       
     </ProtectedRoute>
   );

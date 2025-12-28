@@ -79,7 +79,7 @@ export default function DashboardPage() {
               className="block rounded-lg border border-gray-200 p-4 hover:border-indigo-500 hover:bg-indigo-50 transition-colors"
             >
               <h3 className="font-semibold text-gray-900">Sales</h3>
-              <p className="mt-1 text-sm text-gray-600">View sales data</p>
+              <p className="mt-1 text-sm text-gray-600">Analyze sales data</p>
             </Link>
             <Link
               href="/dashboard/expiring-soon"

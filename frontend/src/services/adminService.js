@@ -101,3 +101,8 @@ export const rejectUser = async (email) => {
   const response = await api.post("/admin/users/reject", { email });
   return response;
 };
+
+export const addPreApprovedEmail = async (email) => {
+  const response = await api.post("/admin/users/pre-approve", { email });
+  return response;
+};
