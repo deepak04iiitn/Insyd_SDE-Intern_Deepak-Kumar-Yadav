@@ -118,7 +118,7 @@ function Pagination({ pagination, onPageChange, isExpired }) {
         <button
           onClick={() => onPageChange(pagination.currentPage - 1, isExpired)}
           disabled={pagination.currentPage === 1}
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          className="cursor-pointer relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
           Previous
         </button>
@@ -126,7 +126,7 @@ function Pagination({ pagination, onPageChange, isExpired }) {
         <button
           onClick={() => onPageChange(pagination.currentPage + 1, isExpired)}
           disabled={pagination.currentPage === pagination.totalPages}
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          className="cursor-pointer relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
           Next
         </button>
@@ -158,7 +158,7 @@ function Pagination({ pagination, onPageChange, isExpired }) {
             <button
               onClick={() => onPageChange(pagination.currentPage - 1, isExpired)}
               disabled={pagination.currentPage === 1}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
+              className="cursor-pointer relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
             >
               Previous
             </button>
@@ -176,7 +176,7 @@ function Pagination({ pagination, onPageChange, isExpired }) {
                   <button
                     key={page}
                     onClick={() => onPageChange(page, isExpired)}
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                    className={`cursor-pointer relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                       page === pagination.currentPage
                         ? "z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
@@ -204,7 +204,7 @@ function Pagination({ pagination, onPageChange, isExpired }) {
             <button
               onClick={() => onPageChange(pagination.currentPage + 1, isExpired)}
               disabled={pagination.currentPage === pagination.totalPages}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
+              className="cursor-pointer relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
             >
               Next
             </button>

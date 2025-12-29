@@ -60,7 +60,7 @@ export default function SalesAnalytics({ analytics, loading, filters, onFilterCh
               value={filters.itemName}
               onChange={(e) => onFilterChange("itemName", e.target.value)}
               placeholder="Filter by item..."
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 h-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
 
@@ -73,7 +73,7 @@ export default function SalesAnalytics({ analytics, loading, filters, onFilterCh
               value={filters.companyName}
               onChange={(e) => onFilterChange("companyName", e.target.value)}
               placeholder="Filter by company..."
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 h-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
 
@@ -84,7 +84,7 @@ export default function SalesAnalytics({ analytics, loading, filters, onFilterCh
             <select
               value={filters.months}
               onChange={(e) => onFilterChange("months", e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="mt-1 h-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
               <option value="3">Last 3 months</option>
               <option value="6">Last 6 months</option>
@@ -98,7 +98,7 @@ export default function SalesAnalytics({ analytics, loading, filters, onFilterCh
         <div className="mt-4">
           <button
             onClick={onRefresh}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+            className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
           >
             Refresh Analytics
           </button>

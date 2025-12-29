@@ -560,7 +560,7 @@ export default function StockPage() {
 
               <button
                 onClick={() => setActiveTab("available")}
-                className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                className={`cursor-pointer whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
                   activeTab === "available"
                     ? "border-indigo-500 text-indigo-600"
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -571,7 +571,7 @@ export default function StockPage() {
 
               <button
                 onClick={() => setActiveTab("outOfStock")}
-                className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                className={`cursor-pointer whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
                   activeTab === "outOfStock"
                     ? "border-indigo-500 text-indigo-600"
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"

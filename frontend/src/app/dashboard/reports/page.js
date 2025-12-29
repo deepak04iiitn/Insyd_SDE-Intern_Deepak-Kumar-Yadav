@@ -150,7 +150,7 @@ export default function ReportsPage() {
                     setPeriodType(e.target.value);
                     setReportData(null);
                   }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block h-8 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 >
                   <option value="weekly">Weekly Report</option>
                   <option value="months">Monthly Report</option>
@@ -168,7 +168,7 @@ export default function ReportsPage() {
                       setPeriodValue(e.target.value);
                       setReportData(null);
                     }}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="block h-8 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   >
                     <option value="1">Last 1 Month</option>
                     <option value="3">Last 3 Months</option>
@@ -195,7 +195,7 @@ export default function ReportsPage() {
               <button
                 onClick={handlePreviewData}
                 disabled={previewLoading}
-                className="rounded-md bg-gray-600 px-6 py-2 text-sm font-semibold text-white hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer rounded-md bg-gray-600 px-6 py-2 text-sm font-semibold text-white hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {previewLoading ? "Loading Preview..." : "Preview Report Data"}
               </button>
@@ -203,7 +203,7 @@ export default function ReportsPage() {
               <button
                 onClick={handleGenerateReport}
                 disabled={loading}
-                className="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center">

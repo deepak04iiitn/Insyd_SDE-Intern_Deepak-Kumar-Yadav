@@ -176,7 +176,7 @@ export default function SalesPage() {
               {error}
               <button
                 onClick={() => setError(null)}
-                className="ml-4 text-red-600 hover:text-red-800"
+                className="cursor-pointer ml-4 text-red-600 hover:text-red-800"
               >
                 ×
               </button>
@@ -188,7 +188,7 @@ export default function SalesPage() {
 
               <button
                 onClick={() => setActiveTab("table")}
-                className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                className={`cursor-pointer whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
                   activeTab === "table"
                     ? "border-indigo-500 text-indigo-600"
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -199,7 +199,7 @@ export default function SalesPage() {
 
               <button
                 onClick={() => setActiveTab("analytics")}
-                className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                className={`cursor-pointer whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
                   activeTab === "analytics"
                     ? "border-indigo-500 text-indigo-600"
                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"

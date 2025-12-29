@@ -85,7 +85,7 @@ export default function StockTable({ stocks, loading, activeTab, pagination, onP
                           onQuantityChange(stock._id, currentQty - 1);
                         }}
                         disabled={saving || (pendingQuantityChanges[stock._id] !== undefined ? pendingQuantityChanges[stock._id] : stock.quantity) <= 0}
-                        className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300 disabled:opacity-50"
+                        className="cursor-pointer rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300 disabled:opacity-50"
                       >
                         -
                       </button>
@@ -104,7 +104,7 @@ export default function StockTable({ stocks, loading, activeTab, pagination, onP
                           onQuantityChange(stock._id, currentQty + 1);
                         }}
                         disabled={saving}
-                        className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300 disabled:opacity-50"
+                        className="cursor-pointer rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300 disabled:opacity-50"
                       >
                         +
                       </button>
@@ -114,7 +114,7 @@ export default function StockTable({ stocks, loading, activeTab, pagination, onP
                         <button
                           onClick={() => onSaveQuantity(stock)}
                           disabled={saving}
-                          className="ml-2 rounded bg-indigo-600 px-2 py-1 text-xs text-white hover:bg-indigo-500 disabled:opacity-50"
+                          className="cursor-pointer ml-2 rounded bg-indigo-600 px-2 py-1 text-xs text-white hover:bg-indigo-500 disabled:opacity-50"
                         >
                           Save
                         </button>
@@ -146,7 +146,7 @@ export default function StockTable({ stocks, loading, activeTab, pagination, onP
                     <button
                       onClick={() => onToggleOutOfStock(stock)}
                       disabled={saving}
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 ${
+                      className={`cursor-pointer relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 ${
                         stock.isSoldOut ? "bg-indigo-600" : "bg-gray-200"
                       }`}
                       role="switch"
@@ -173,7 +173,7 @@ export default function StockTable({ stocks, loading, activeTab, pagination, onP
                     {activeTab === "available" && (
                       <button
                         onClick={() => onEdit(stock)}
-                        className="text-indigo-600 hover:text-indigo-900"
+                        className="text-indigo-600 hover:text-indigo-900 cursor-pointer"
                       >
                         Edit
                       </button>
@@ -182,7 +182,7 @@ export default function StockTable({ stocks, loading, activeTab, pagination, onP
                     <button
                       onClick={() => onDelete(stock)}
                       disabled={saving}
-                      className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                      className="text-red-600 hover:text-red-900 cursor-pointer disabled:opacity-50"
                     >
                       Delete
                     </button>
@@ -216,7 +216,7 @@ function Pagination({ pagination, onPageChange, isOutOfStock }) {
         <button
           onClick={() => onPageChange(pagination.currentPage - 1, isOutOfStock)}
           disabled={pagination.currentPage === 1}
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          className="cursor-pointer relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
           Previous
         </button>
@@ -224,7 +224,7 @@ function Pagination({ pagination, onPageChange, isOutOfStock }) {
         <button
           onClick={() => onPageChange(pagination.currentPage + 1, isOutOfStock)}
           disabled={pagination.currentPage === pagination.totalPages}
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          className="cursor-pointer relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
           Next
         </button>
@@ -256,7 +256,7 @@ function Pagination({ pagination, onPageChange, isOutOfStock }) {
             <button
               onClick={() => onPageChange(pagination.currentPage - 1, isOutOfStock)}
               disabled={pagination.currentPage === 1}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
+              className="cursor-pointer relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
             >
               Previous
             </button>
@@ -274,7 +274,7 @@ function Pagination({ pagination, onPageChange, isOutOfStock }) {
                   <button
                     key={page}
                     onClick={() => onPageChange(page, isOutOfStock)}
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                    className={`cursor-pointer relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                       page === pagination.currentPage
                         ? "z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
@@ -302,7 +302,7 @@ function Pagination({ pagination, onPageChange, isOutOfStock }) {
             <button
               onClick={() => onPageChange(pagination.currentPage + 1, isOutOfStock)}
               disabled={pagination.currentPage === pagination.totalPages}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
+              className="cursor-pointer relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50"
             >
               Next
             </button>
