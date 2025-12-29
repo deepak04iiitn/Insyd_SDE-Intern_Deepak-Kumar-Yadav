@@ -55,6 +55,28 @@ export default function Header() {
                 Sales
               </Link>
 
+              <Link
+                href="/dashboard/expiring-soon"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname?.includes("/expiring-soon")
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
+                }`}
+              >
+                Expiring Soon
+              </Link>
+
+              <Link
+                href="/dashboard/reports"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname?.includes("/reports")
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
+                }`}
+              >
+                Reports
+              </Link>
+
               {isAdmin && (
                 <Link
                   href="/dashboard/admin"
