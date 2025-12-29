@@ -7,6 +7,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import stockRoutes from "./routes/stockRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
 import expiringSoonRoutes from "./routes/expiringSoonRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 import { globalErrorHandler } from "./middlewares/errorHandler.js";
 import { startExpiryCheckJob } from "./jobs/expiryCheckJob.js";
 
@@ -31,6 +32,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/expiring-soon", expiringSoonRoutes);
+app.use("/api/reports", reportRoutes);
 
 // Global error handler 
 app.use(globalErrorHandler);
