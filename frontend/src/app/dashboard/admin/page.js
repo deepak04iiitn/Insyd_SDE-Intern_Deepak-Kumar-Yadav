@@ -87,6 +87,36 @@ export default function AdminPage() {
     }
   };
 
+  const handlePromoteToAdmin = async (email) => {
+    try {
+
+      setError(null);
+      setSuccess(null);
+
+      await adminService.promoteToAdmin(email);
+      setSuccess(`User ${email} has been promoted to admin`);
+      fetchUsers(); 
+
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to promote user");
+    }
+  };
+
+  const handleDemoteFromAdmin = async (email) => {
+    try {
+
+      setError(null);
+      setSuccess(null);
+
+      await adminService.demoteFromAdmin(email);
+      setSuccess(`User ${email} has been demoted from admin`);
+      fetchUsers(); 
+
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to demote user");
+    }
+  };
+
   const handleAddUser = async (e) => {
     e.preventDefault();
     
@@ -301,22 +331,40 @@ export default function AdminPage() {
                             {new Date(user.createdAt).toLocaleDateString()}
                           </td>
                           <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                            {!user.isApproved && user.role !== "admin" && (
-                              <button
-                                onClick={() => handleApprove(user.email)}
-                                className="rounded-md bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-500"
-                              >
-                                Approve
-                              </button>
-                            )}
-                            {user.isApproved && user.role !== "admin" && (
-                              <button
-                                onClick={() => handleReject(user.email)}
-                                className="rounded-md bg-red-600 px-3 py-1 text-white hover:bg-red-500"
-                              >
-                                Revoke
-                              </button>
-                            )}
+                            <div className="flex flex-wrap gap-2">
+                              {!user.isApproved && user.role !== "admin" && (
+                                <button
+                                  onClick={() => handleApprove(user.email)}
+                                  className="rounded-md bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-500"
+                                >
+                                  Approve
+                                </button>
+                              )}
+                              {user.isApproved && user.role !== "admin" && (
+                                <button
+                                  onClick={() => handleReject(user.email)}
+                                  className="rounded-md bg-red-600 px-3 py-1 text-white hover:bg-red-500"
+                                >
+                                  Revoke
+                                </button>
+                              )}
+                              {user.role !== "admin" && (
+                                <button
+                                  onClick={() => handlePromoteToAdmin(user.email)}
+                                  className="rounded-md bg-purple-600 px-3 py-1 text-white hover:bg-purple-500"
+                                >
+                                  Make Admin
+                                </button>
+                              )}
+                              {user.role === "admin" && user.email !== currentUser?.email && (
+                                <button
+                                  onClick={() => handleDemoteFromAdmin(user.email)}
+                                  className="rounded-md bg-orange-600 px-3 py-1 text-white hover:bg-orange-500"
+                                >
+                                  Remove Admin
+                                </button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}

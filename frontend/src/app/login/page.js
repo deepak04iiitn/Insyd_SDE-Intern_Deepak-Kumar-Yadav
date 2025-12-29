@@ -43,7 +43,6 @@ export default function LoginPage() {
     dispatch(clearError());
     const result = await dispatch(login(formData));
     
-    // If login successful, redirect to dashboard
     if(login.fulfilled.match(result)) {
       router.push("/dashboard");
     }

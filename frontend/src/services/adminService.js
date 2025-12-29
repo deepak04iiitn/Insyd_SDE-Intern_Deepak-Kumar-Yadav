@@ -106,3 +106,13 @@ export const addPreApprovedEmail = async (email) => {
   const response = await api.post("/admin/users/pre-approve", { email });
   return response;
 };
+
+export const promoteToAdmin = async (email) => {
+  const response = await api.post("/admin/users/promote", { email });
+  return response;
+};
+
+export const demoteFromAdmin = async (email) => {
+  const response = await api.post("/admin/users/demote", { email });
+  return response;
+};

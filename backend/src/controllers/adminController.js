@@ -191,3 +191,102 @@ export const addPreApprovedEmail = async (req, res, next) => {
   }
 };
 
+
+// Promoting a user to admin
+export const promoteToAdmin = async (req, res, next) => {
+
+  try {
+
+    const { email } = req.body;
+
+    if(!email) {
+      return next(errorHandler(400, "Please provide an email address"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if(!user) {
+      return next(errorHandler(404, "User not found with this email"));
+    }
+
+    if(user.role === "admin") {
+      return next(errorHandler(400, "User is already an admin"));
+    }
+
+    if(user._id.toString() === req.user.userId) {
+      return next(errorHandler(400, "Cannot change your own role"));
+    }
+
+    user.role = "admin";
+    if(!user.isApproved) {
+      user.isApproved = true;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User promoted to admin successfully",
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isApproved: user.isApproved,
+        },
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Demoting an admin to normal user
+export const demoteFromAdmin = async (req, res, next) => {
+
+  try {
+
+    const { email } = req.body;
+
+    if(!email) {
+      return next(errorHandler(400, "Please provide an email address"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if(!user) {
+      return next(errorHandler(404, "User not found with this email"));
+    }
+
+    if(user.role !== "admin") {
+      return next(errorHandler(400, "User is not an admin"));
+    }
+
+    if(user._id.toString() === req.user.userId) {
+      return next(errorHandler(400, "Cannot change your own role"));
+    }
+
+    user.role = "user";
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User demoted from admin successfully",
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isApproved: user.isApproved,
+        },
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
