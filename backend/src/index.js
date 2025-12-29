@@ -6,11 +6,16 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import stockRoutes from "./routes/stockRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
+import expiringSoonRoutes from "./routes/expiringSoonRoutes.js";
 import { globalErrorHandler } from "./middlewares/errorHandler.js";
+import { startExpiryCheckJob } from "./jobs/expiryCheckJob.js";
 
 dotenv.config();
 
 connectDB();
+
+// Start expiry check cron job
+startExpiryCheckJob();
 
 const app = express();
 app.use(cors());
@@ -25,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/sales", salesRoutes);
+app.use("/api/expiring-soon", expiringSoonRoutes);
 
 // Global error handler 
 app.use(globalErrorHandler);

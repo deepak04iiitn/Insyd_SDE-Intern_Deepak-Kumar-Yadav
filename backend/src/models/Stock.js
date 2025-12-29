@@ -45,6 +45,26 @@ const stockSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    isExpiringSoon: {
+      type: Boolean,
+      default: false,
+    },
+    isExpired: {
+      type: Boolean,
+      default: false,
+    },
+    dateExpired: {
+      type: Date,
+      default: null,
+    },
+    dateExpiringSoonNotified: {
+      type: Date,
+      default: null,
+    },
+    dateExpiredNotified: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -56,6 +76,8 @@ stockSchema.index({ name: 1 });
 stockSchema.index({ companyName: 1 });
 stockSchema.index({ isSoldOut: 1 });
 stockSchema.index({ expiryDate: 1 });
+stockSchema.index({ isExpiringSoon: 1 });
+stockSchema.index({ isExpired: 1 });
 
 export default mongoose.model("Stock", stockSchema);
 

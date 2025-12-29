@@ -7,11 +7,13 @@ import { setupAuthInterceptor } from "../services/authService";
 import { setupAdminInterceptor } from "../services/adminService";
 import { setupStockInterceptor } from "../services/stockService";
 import { setupSalesInterceptor } from "../services/salesService";
+import { setupExpiringSoonInterceptor } from "../services/expiringSoonService";
 
 setupAuthInterceptor(store);
 setupAdminInterceptor(store);
 setupStockInterceptor(store);
 setupSalesInterceptor(store);
+setupExpiringSoonInterceptor(store);
 
 export default function ReduxProvider({ children }) {
   return (
