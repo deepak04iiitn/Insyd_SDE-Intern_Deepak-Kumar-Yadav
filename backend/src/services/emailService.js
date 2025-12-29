@@ -10,6 +10,11 @@ export const sendExpiringSoonEmail = async (adminEmail, items) => {
 
   try {
 
+    if(!process.env.RESEND_API_KEY) {
+      // console.error('RESEND_API_KEY is not set in environment variables');
+      return { success: false, message: 'RESEND_API_KEY not configured' };
+    }
+
     if(!adminEmail || !items || items.length === 0) {
       return { success: false, message: 'Invalid email or items' };
     }
@@ -96,6 +101,11 @@ export const sendExpiringSoonEmail = async (adminEmail, items) => {
 export const sendExpiredEmail = async (adminEmail, items) => {
 
   try {
+
+    if(!process.env.RESEND_API_KEY) {
+      // console.error('RESEND_API_KEY is not set in environment variables');
+      return { success: false, message: 'RESEND_API_KEY not configured' };
+    }
 
     if(!adminEmail || !items || items.length === 0) {
       return { success: false, message: 'Invalid email or items' };

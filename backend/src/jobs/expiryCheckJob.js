@@ -1,98 +1,95 @@
 import cron from 'node-cron';
 import Stock from '../models/Stock.js';
-import User from '../models/User.js';
 import { sendExpiringSoonEmail, sendExpiredEmail } from '../services/emailService.js';
 
-/**
- * Check for items expiring soon (within 3 months) and expired items
- * Runs daily at 9:00 AM
- */
-export const startExpiryCheckJob = () => {
-  // Run daily at 9:00 AM
-  cron.schedule('0 9 * * *', async () => {
-    console.log('Running expiry check job...');
-    
-    try {
-      const now = new Date();
-      const threeMonthsFromNow = new Date();
-      threeMonthsFromNow.setMonth(now.getMonth() + 3);
 
-      // Find all items with expiry dates that are not sold out
-      const allItems = await Stock.find({
-        expiryDate: { $exists: true, $ne: null },
-        isSoldOut: false,
-      });
+// Checking for items expiring soon (within 3 months) and expired items
+// This function can be called immediately or scheduled via cron
+export const runExpiryCheck = async () => {
+  try {
+    const now = new Date();
+    const threeMonthsFromNow = new Date();
+    threeMonthsFromNow.setMonth(now.getMonth() + 3);
 
-      const expiringSoonItems = [];
-      const expiredItems = [];
+    const allItems = await Stock.find({
+      expiryDate: { $exists: true, $ne: null },
+      isSoldOut: false,
+    });
 
-      for (const item of allItems) {
-        const expiryDate = new Date(item.expiryDate);
+    const expiringSoonItems = [];
+    const expiredItems = [];
+
+    for(const item of allItems) {
+      const expiryDate = new Date(item.expiryDate);
+      
+      if(expiryDate < now && !item.isExpired) {
+        item.isExpired = true;
+        item.isExpiringSoon = false;
+        item.dateExpired = now;
         
-        // Check if item is expired
-        if (expiryDate < now && !item.isExpired) {
-          item.isExpired = true;
-          item.isExpiringSoon = false;
-          item.dateExpired = now;
-          
-          // Only send email if not already notified
-          if (!item.dateExpiredNotified) {
-            expiredItems.push(item);
-            item.dateExpiredNotified = now;
-          }
-          
-          await item.save();
+        if(!item.dateExpiredNotified) {
+          expiredItems.push(item);
+          item.dateExpiredNotified = now;
         }
-        // Check if item is expiring soon (within 3 months) and not expired
-        else if (expiryDate >= now && expiryDate <= threeMonthsFromNow && !item.isExpiringSoon && !item.isExpired) {
-          item.isExpiringSoon = true;
-          
-          // Only send email if not already notified
-          if (!item.dateExpiringSoonNotified) {
-            expiringSoonItems.push(item);
-            item.dateExpiringSoonNotified = now;
-          }
-          
-          await item.save();
-        }
-        // If item is no longer expiring soon (expired or past 3 months threshold), update status
-        else if (item.isExpiringSoon && expiryDate > threeMonthsFromNow) {
-          item.isExpiringSoon = false;
-          await item.save();
-        }
+        
+        await item.save();
       }
-
-      // Get admin email addresses
-      const admins = await User.find({ role: 'admin', isActive: true }).select('email');
-
-      if (admins.length === 0) {
-        console.log('No admin users found to send notifications');
-        return;
-      }
-
-      // Send emails to all admins
-      const emailPromises = [];
-
-      if (expiringSoonItems.length > 0) {
-        for (const admin of admins) {
-          emailPromises.push(sendExpiringSoonEmail(admin.email, expiringSoonItems));
+      else if (expiryDate >= now && expiryDate <= threeMonthsFromNow && !item.isExpiringSoon && !item.isExpired) {
+        item.isExpiringSoon = true;
+        
+        if(!item.dateExpiringSoonNotified) {
+          expiringSoonItems.push(item);
+          item.dateExpiringSoonNotified = now;
         }
-        console.log(`Sent expiring soon notifications for ${expiringSoonItems.length} items`);
+        
+        await item.save();
       }
-
-      if (expiredItems.length > 0) {
-        for (const admin of admins) {
-          emailPromises.push(sendExpiredEmail(admin.email, expiredItems));
-        }
-        console.log(`Sent expired notifications for ${expiredItems.length} items`);
+      else if (item.isExpiringSoon && expiryDate > threeMonthsFromNow) {
+        item.isExpiringSoon = false;
+        await item.save();
       }
-
-      await Promise.all(emailPromises);
-
-      console.log('Expiry check job completed successfully');
-    } catch (error) {
-      console.error('Error in expiry check job:', error);
     }
+
+    const notificationEmail = 'deepak20yadav10@gmail.com';
+
+    if(expiringSoonItems.length === 0 && expiredItems.length === 0) {
+      return;
+    }
+
+    const emailPromises = [];
+
+    if(expiringSoonItems.length > 0) {
+      emailPromises.push(
+        sendExpiringSoonEmail(notificationEmail, expiringSoonItems)
+          .catch(error => {
+            console.error('Error sending expiring soon email:', error);
+            return { success: false, error: error.message };
+          })
+      );
+    }
+
+    if(expiredItems.length > 0) {
+      emailPromises.push(
+        sendExpiredEmail(notificationEmail, expiredItems)
+          .catch(error => {
+            console.error('Error sending expired email:', error);
+            return { success: false, error: error.message };
+          })
+      );
+    }
+
+    await Promise.all(emailPromises);
+  } catch (error) {
+    console.error('Error in expiry check job:', error);
+    throw error; 
+  }
+};
+
+
+// Scheduling the job to run daily at 9:00 AM
+export const startExpiryCheckJob = () => {
+  cron.schedule('0 9 * * *', async () => {
+    await runExpiryCheck();
   });
 
   console.log('Expiry check job scheduled to run daily at 9:00 AM');
