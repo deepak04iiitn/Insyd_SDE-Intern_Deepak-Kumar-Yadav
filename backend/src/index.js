@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import stockRoutes from "./routes/stockRoutes.js";
+import salesRoutes from "./routes/salesRoutes.js";
 import { globalErrorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/stock", stockRoutes);
+app.use("/api/sales", salesRoutes);
 
 // Global error handler 
 app.use(globalErrorHandler);

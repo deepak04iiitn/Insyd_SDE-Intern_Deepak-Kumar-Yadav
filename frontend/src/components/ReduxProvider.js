@@ -6,10 +6,12 @@ import { store, persistor } from "../lib/store";
 import { setupAuthInterceptor } from "../services/authService";
 import { setupAdminInterceptor } from "../services/adminService";
 import { setupStockInterceptor } from "../services/stockService";
+import { setupSalesInterceptor } from "../services/salesService";
 
 setupAuthInterceptor(store);
 setupAdminInterceptor(store);
 setupStockInterceptor(store);
+setupSalesInterceptor(store);
 
 export default function ReduxProvider({ children }) {
   return (
