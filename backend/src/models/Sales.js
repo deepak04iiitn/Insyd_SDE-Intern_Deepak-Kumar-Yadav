@@ -36,7 +36,7 @@ const salesSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for better query performance
+
 salesSchema.index({ stockId: 1 });
 salesSchema.index({ saleDate: -1 });
 salesSchema.index({ itemName: 1 });
