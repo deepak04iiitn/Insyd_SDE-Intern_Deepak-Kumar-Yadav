@@ -64,6 +64,22 @@ export const getMe = createAsyncThunk(
 );
 
 
+export const logoutAsync = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await authService.logout();
+      return response.data;
+    } catch (error) {
+      // Even if the API call fails, we should still logout locally
+      return rejectWithValue(
+        error.response?.data?.message || "Logout failed"
+      );
+    }
+  }
+);
+
+
 // Auth slice
 const authSlice = createSlice({
   name: "auth",
@@ -155,11 +171,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         const errorMessage = String(action.payload || "");
 
-        // Only clear auth state if we get a clear 401/Unauthorized error
-        // Don't clear if it's a network error or other issues
         if(errorMessage.includes("401") || errorMessage.includes("Unauthorized") || errorMessage.includes("Not authorized")) {
-          // Only clear if we don't already have user data (might be a stale token)
-          // If we have user data from login, keep it even if getMe fails
           if(!state.user) {
             state.isAuthenticated = false;
             state.user = null;
@@ -167,6 +179,24 @@ const authSlice = createSlice({
           }
         }
         
+      })
+
+      .addCase(logoutAsync.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(logoutAsync.fulfilled, (state) => {
+        state.isLoading = false;
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.error = null;
+      })
+      .addCase(logoutAsync.rejected, (state) => {
+        state.isLoading = false;
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.error = null;
       });
   },
 });

@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { logout as logoutAction, getMe } from "../lib/slices/authSlice";
+import { logoutAsync, getMe } from "../lib/slices/authSlice";
 import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
@@ -8,9 +8,19 @@ export const useAuth = () => {
   const router = useRouter();
   const auth = useSelector((state) => state.auth);
 
-  const logout = () => {
-    dispatch(logoutAction());
-    router.push("/login");
+  const logout = async () => {
+
+    try {
+      await dispatch(logoutAsync()).unwrap();
+    } catch (error) {
+      // continuing with logout even if API call fails
+    } finally {
+      if(typeof window !== "undefined") {
+        localStorage.removeItem("persist:root");
+      }
+      router.push("/login");
+    }
+    
   };
 
   const refreshUser = () => {

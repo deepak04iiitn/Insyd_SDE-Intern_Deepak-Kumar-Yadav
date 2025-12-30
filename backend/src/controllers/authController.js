@@ -160,3 +160,15 @@ export const getMe = async (req, res, next) => {
   }
 };
 
+
+// Logout User
+export const logout = async (req, res, next) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

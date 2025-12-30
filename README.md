@@ -286,6 +286,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api
 
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login user
+- `POST /api/auth/logout` - Logout user
 - `GET /api/auth/me` - Get current user (protected)
 
 ### Admin Routes (Admin Only)
