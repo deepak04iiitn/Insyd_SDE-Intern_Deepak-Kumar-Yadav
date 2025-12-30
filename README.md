@@ -2,6 +2,13 @@
 
 A comprehensive full-stack inventory management application built with Next.js and Node.js, designed to help businesses efficiently manage their stock, track sales, monitor expiring items, and generate detailed reports.
 
+## 🔑 Testing Credentials
+
+For testing purposes, you can use the following admin credentials:
+
+- **Email**: `admin@gmail.com`
+- **Password**: `admin123`
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)

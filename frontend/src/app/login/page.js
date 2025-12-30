@@ -92,6 +92,17 @@ export default function LoginPage() {
               Sign in to your account to continue
             </p>
 
+            <div className="mt-4 rounded-xl bg-blue-50 border border-blue-200 p-4">
+              <div className="flex items-start">
+                <Info className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-800 text-left">
+                  <p className="font-semibold text-blue-900 mb-1">Testing Credentials:</p>
+                  <p className="text-blue-700">Email: <span className="font-mono font-semibold">admin@gmail.com</span></p>
+                  <p className="text-blue-700">Password: <span className="font-mono font-semibold">admin123</span></p>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
