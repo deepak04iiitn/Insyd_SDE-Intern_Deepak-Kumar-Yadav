@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import * as adminService from "../../../services/adminService";
@@ -13,7 +13,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [activeTab, setActiveTab] = useState("pending"); // "pending" or "all"
+  const [activeTab, setActiveTab] = useState("pending"); // "pending", "all", "approved", or "rejected"
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
   const [addingUser, setAddingUser] = useState(false);
@@ -143,6 +143,20 @@ export default function AdminPage() {
     }
   };
 
+
+  const approvedUsers = useMemo(() => {
+    return users.filter(u => u.isApproved);
+  }, [users]);
+
+
+  const rejectedUsers = useMemo(() => {
+    return users.filter(u => 
+      !u.isApproved && 
+      (u.wasApproved === true || (!u.wasApproved && !pendingUsers.find(pu => pu._id === u._id)))
+    );
+  }, [users, pendingUsers]);
+
+  
   return (
     <ProtectedRoute requireAdmin={true}>
       <div className="min-h-screen bg-gray-50 p-8">
@@ -187,6 +201,28 @@ export default function AdminPage() {
                 }`}
               >
                 Pending Approval ({pendingUsers.length})
+              </button>
+
+              <button
+                onClick={() => setActiveTab("approved")}
+                className={`cursor-pointer whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium ${
+                  activeTab === "approved"
+                    ? "border-indigo-500 text-indigo-600"
+                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                }`}
+              >
+                Approved ({approvedUsers.length})
+              </button>
+
+              <button
+                onClick={() => setActiveTab("rejected")}
+                className={`cursor-pointer whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium ${
+                  activeTab === "rejected"
+                    ? "border-indigo-500 text-indigo-600"
+                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                }`}
+              >
+                Rejected ({rejectedUsers.length})
               </button>
 
               <button
@@ -257,6 +293,178 @@ export default function AdminPage() {
                             >
                               Reject
                             </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ) : activeTab === "approved" ? (
+            <div className="rounded-lg bg-white shadow">
+              {approvedUsers.length === 0 ? (
+                <div className="p-12 text-center">
+                  <p className="text-gray-500">No approved users</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Email
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Role
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Registered
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {approvedUsers.map((user) => (
+                        <tr key={user._id}>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                            {user.name}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {user.email}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            <span
+                              className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                                user.role === "admin"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {user.role}
+                            </span>
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {new Date(user.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                            <div className="flex flex-wrap gap-2">
+                              {user.isApproved && user.role !== "admin" && (
+                                <button
+                                  onClick={() => handleReject(user.email)}
+                                  className="cursor-pointer rounded-md bg-red-600 px-3 py-1 text-white hover:bg-red-500"
+                                >
+                                  Revoke
+                                </button>
+                              )}
+                              {user.role !== "admin" && (
+                                <button
+                                  onClick={() => handlePromoteToAdmin(user.email)}
+                                  className="cursor-pointer rounded-md bg-purple-600 px-3 py-1 text-white hover:bg-purple-500"
+                                >
+                                  Make Admin
+                                </button>
+                              )}
+                              {user.role === "admin" && user.email !== currentUser?.email && (
+                                <button
+                                  onClick={() => handleDemoteFromAdmin(user.email)}
+                                  className="cursor-pointer rounded-md bg-orange-600 px-3 py-1 text-white hover:bg-orange-500"
+                                >
+                                  Remove Admin
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ) : activeTab === "rejected" ? (
+            <div className="rounded-lg bg-white shadow">
+              {rejectedUsers.length === 0 ? (
+                <div className="p-12 text-center">
+                  <p className="text-gray-500">No rejected users</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Email
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Role
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Registered
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {rejectedUsers.map((user) => (
+                        <tr key={user._id}>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                            {user.name}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {user.email}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            <span
+                              className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                                user.role === "admin"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {user.role}
+                            </span>
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {new Date(user.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                            <div className="flex flex-wrap gap-2">
+                              {!user.isApproved && user.role !== "admin" && (
+                                <button
+                                  onClick={() => handleApprove(user.email)}
+                                  className="cursor-pointer rounded-md bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-500"
+                                >
+                                  Approve
+                                </button>
+                              )}
+                              {user.role !== "admin" && (
+                                <button
+                                  onClick={() => handlePromoteToAdmin(user.email)}
+                                  className="cursor-pointer rounded-md bg-purple-600 px-3 py-1 text-white hover:bg-purple-500"
+                                >
+                                  Make Admin
+                                </button>
+                              )}
+                              {user.role === "admin" && user.email !== currentUser?.email && (
+                                <button
+                                  onClick={() => handleDemoteFromAdmin(user.email)}
+                                  className="cursor-pointer rounded-md bg-orange-600 px-3 py-1 text-white hover:bg-orange-500"
+                                >
+                                  Remove Admin
+                                </button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}

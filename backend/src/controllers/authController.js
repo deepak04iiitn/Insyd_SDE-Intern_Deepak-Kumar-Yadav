@@ -42,18 +42,19 @@ export const register = async (req, res, next) => {
       userRole = "user";
     }
 
-    // Check if email is in pre-approved list
     const preApprovedEmail = await PreApprovedEmail.findOne({ email: email.toLowerCase() });
     const isPreApproved = !!preApprovedEmail;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    const isApprovedStatus = userRole === "admin" || isPreApproved;
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       role: userRole,
-      isApproved: userRole === "admin" || isPreApproved, 
+      isApproved: isApprovedStatus,
+      wasApproved: isApprovedStatus,
     });
 
     const token = generateToken(user._id);

@@ -261,7 +261,7 @@ function Pagination({ pagination, onPageChange, isOutOfStock }) {
               Previous
             </button>
 
-            {[...Array(pagination.totalPages)].map((_, idx) => {
+            {pagination.totalPages > 0 && [...Array(pagination.totalPages)].map((_, idx) => {
 
               const page = idx + 1;
               if (

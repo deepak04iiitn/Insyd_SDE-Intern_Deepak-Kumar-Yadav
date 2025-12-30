@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import PreApprovedEmail from "../models/PreApprovedEmail.js";
 import { errorHandler } from "../middlewares/errorHandler.js";
 
+
 // Getting all the users (admin only)
 export const getAllUsers = async (req, res, next) => {
   try {
@@ -42,6 +43,7 @@ export const approveUser = async (req, res, next) => {
     }
 
     user.isApproved = true;
+    user.wasApproved = true;
     await user.save();
 
     res.status(200).json({
@@ -111,6 +113,7 @@ export const getPendingUsers = async (req, res, next) => {
 
     const pendingUsers = await User.find({ 
       isApproved: false,
+      wasApproved: false,
       role: "user"
     }).select("-password").sort({ createdAt: -1 });
 
@@ -150,6 +153,7 @@ export const addPreApprovedEmail = async (req, res, next) => {
 
       if(!existingUser.isApproved) {
         existingUser.isApproved = true;
+        existingUser.wasApproved = true;
         await existingUser.save();
       }
       
@@ -220,6 +224,7 @@ export const promoteToAdmin = async (req, res, next) => {
     user.role = "admin";
     if(!user.isApproved) {
       user.isApproved = true;
+      user.wasApproved = true;
     }
 
     await user.save();

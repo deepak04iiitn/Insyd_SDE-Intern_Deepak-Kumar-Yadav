@@ -27,21 +27,19 @@ export default function StockPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [stockToDelete, setStockToDelete] = useState(null);
 
-  // Pagination states
   const [availablePagination, setAvailablePagination] = useState({
     currentPage: 1,
-    totalPages: 1,
+    totalPages: 0,
     totalItems: 0,
     itemsPerPage: 10,
   });
   const [outOfStockPagination, setOutOfStockPagination] = useState({
     currentPage: 1,
-    totalPages: 1,
+    totalPages: 0,
     totalItems: 0,
     itemsPerPage: 10,
   });
 
-  // Filter and search states
   const [availableFilters, setAvailableFilters] = useState({
     search: "",
     companyName: "",
@@ -51,6 +49,7 @@ export default function StockPage() {
     sortBy: "createdAt",
     sortOrder: "desc",
   });
+
   const [outOfStockFilters, setOutOfStockFilters] = useState({
     search: "",
     companyName: "",
@@ -61,7 +60,6 @@ export default function StockPage() {
     sortOrder: "desc",
   });
 
-  // Form state for adding/editing stock
   const [formData, setFormData] = useState({
     name: "",
     quantity: "",
@@ -72,15 +70,17 @@ export default function StockPage() {
   });
 
   
-  const fetchAvailableStock = useCallback(async () => {
+  const fetchAvailableStock = useCallback(async (page = null) => {
 
     try {
 
       setLoading(true);
       setError(null);
 
+      const currentPage = page !== null ? page : availablePagination.currentPage;
+
       const params = {
-        page: availablePagination.currentPage,
+        page: currentPage,
         limit: availablePagination.itemsPerPage,
         ...availableFilters,
       };
@@ -101,18 +101,20 @@ export default function StockPage() {
       setLoading(false);
     }
 
-  }, [availablePagination.currentPage, availableFilters]);
+  }, [availablePagination.currentPage, availablePagination.itemsPerPage, availableFilters]);
 
 
-  const fetchOutOfStock = useCallback(async () => {
+  const fetchOutOfStock = useCallback(async (page = null) => {
 
     try {
 
       setLoading(true);
       setError(null);
 
+      const currentPage = page !== null ? page : outOfStockPagination.currentPage;
+
       const params = {
-        page: outOfStockPagination.currentPage,
+        page: currentPage,
         limit: outOfStockPagination.itemsPerPage,
         ...outOfStockFilters,
       };
@@ -132,7 +134,7 @@ export default function StockPage() {
     } finally {
       setLoading(false);
     }
-  }, [outOfStockPagination.currentPage, outOfStockFilters]);
+  }, [outOfStockPagination.currentPage, outOfStockPagination.itemsPerPage, outOfStockFilters]);
 
   
   const fetchInactiveTabCount = useCallback(async (isOutOfStockTab) => {
@@ -169,40 +171,20 @@ export default function StockPage() {
 
     if(authLoading || !token) return;
 
-    const fetchBothCounts = async () => {
+    if(activeTab === "available") {
+      setAvailablePagination((prev) => ({ ...prev, currentPage: 1 }));
+    } else {
+      setOutOfStockPagination((prev) => ({ ...prev, currentPage: 1 }));
+    }
 
-      try {
-
-        const [availableResponse, outOfStockResponse] = await Promise.all([
-          stockService.getAvailableStock({ page: 1, limit: 1 }),
-          stockService.getOutOfStock({ page: 1, limit: 1 }),
-        ]);
-        
-        setAvailablePagination((prev) => ({
-          ...prev,
-          totalItems: availableResponse.data.data.pagination.totalItems,
-          totalPages: availableResponse.data.data.pagination.totalPages,
-        }));
-
-        setOutOfStockPagination((prev) => ({
-          ...prev,
-          totalItems: outOfStockResponse.data.data.pagination.totalItems,
-          totalPages: outOfStockResponse.data.data.pagination.totalPages,
-        }));
-
-      } catch (err) {
-        console.error("Failed to fetch initial counts:", err);
-      }
-    };
-
-    fetchBothCounts();
-  }, [authLoading, token]);
+  }, [authLoading, token, activeTab]);
 
   
   useEffect(() => {
 
     if(authLoading || !token) return;
 
+    // Fetch count for inactive tab (for tab badge)
     if(activeTab === "available") {
       fetchInactiveTabCount(true);
     } else {
@@ -220,7 +202,8 @@ export default function StockPage() {
     } else {
       fetchOutOfStock();
     }
-  }, [authLoading, token, activeTab, fetchAvailableStock, fetchOutOfStock]);
+    
+  }, [authLoading, token, activeTab, availablePagination.currentPage, outOfStockPagination.currentPage, availableFilters, outOfStockFilters, fetchAvailableStock, fetchOutOfStock]);
 
  
   const handleFilterChange = (filterName, value, isOutOfStock = false) => {
