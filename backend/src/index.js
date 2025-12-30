@@ -15,7 +15,6 @@ dotenv.config();
 
 connectDB();
 
-// Start expiry check cron job
 startExpiryCheckJob();
 
 const app = express();
@@ -33,6 +32,10 @@ app.use("/api/stock", stockRoutes);
 app.use("/api/sales", salesRoutes);
 app.use("/api/expiring-soon", expiringSoonRoutes);
 app.use("/api/reports", reportRoutes);
+
+app.get('/api/ping', (req, res) => {
+  res.status(200).send('pong');
+});
 
 // Global error handler 
 app.use(globalErrorHandler);
