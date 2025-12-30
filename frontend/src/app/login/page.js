@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { login, clearError } from "../../lib/slices/authSlice";
 import Link from "next/link";
-import { Lock, Mail, AlertCircle, Loader2, ArrowRight } from "lucide-react";
+import { Lock, Mail, AlertCircle, Loader2, ArrowRight, Info } from "lucide-react";
 
 export default function LoginPage() {
 
@@ -49,8 +49,35 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-lg">
+    <>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-3xl p-8 sm:p-10 max-w-md w-full mx-4 border border-white/20 animate-in zoom-in-95 duration-300">
+            <div className="text-center space-y-6">
+
+              <div className="mx-auto h-16 w-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Loader2 className="h-8 w-8 text-white animate-spin" />
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Please wait...</h3>
+                <div className="rounded-xl bg-blue-50 border border-blue-200 p-4 mt-4">
+                  <div className="flex items-start">
+                    <Info className="h-5 w-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800 text-left">
+                      <p className="text-blue-700">If loading takes longer than usual, please wait a minute or two. The backend is deployed on Render's free tier, which goes to sleep mode after 15 minutes of inactivity and may take some time to wake up.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-lg">
         <div className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-8 sm:p-10 space-y-8 border border-white/20">
 
           <div className="text-center">
@@ -159,6 +186,7 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
