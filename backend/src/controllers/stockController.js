@@ -145,7 +145,6 @@ export const addStock = async (req, res, next) => {
 
     const { name, quantity, quantityType, companyName, price, expiryDate } = req.body;
 
-    // Validate required fields - check for undefined, null, or empty strings
     if(!name || name.trim() === "" || 
        quantity === undefined || quantity === null || 
        !quantityType || quantityType.trim() === "" || 
