@@ -64,13 +64,12 @@ api.interceptors.response.use(
   }
 );
 
-// Get expiring soon items with pagination, sorting, filtering, and searching
+
 export const getExpiringSoon = async (params = {}) => {
   const response = await api.get("/expiring-soon/expiring-soon", { params });
   return response;
 };
 
-// Get expired items with pagination, sorting, filtering, and searching
 export const getExpired = async (params = {}) => {
   const response = await api.get("/expiring-soon/expired", { params });
   return response;

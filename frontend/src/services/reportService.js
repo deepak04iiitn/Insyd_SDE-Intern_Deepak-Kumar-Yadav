@@ -59,17 +59,16 @@ api.interceptors.response.use(
   }
 );
 
-// Get report data (for preview)
+
 export const getReportData = async (params = {}) => {
   const response = await api.get("/reports/data", { params });
   return response;
 };
 
-// Generate and download PDF report
 export const generateReport = async (params = {}) => {
   const response = await api.get("/reports/generate", {
     params,
-    responseType: "blob", // Important for PDF download
+    responseType: "blob", 
   });
   return response;
 };

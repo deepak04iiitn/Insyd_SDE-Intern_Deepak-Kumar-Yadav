@@ -98,30 +98,26 @@ const authSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // Handle Redux Persist rehydration
       .addCase(REHYDRATE, (state, action) => {
-        // When state is rehydrated from localStorage, restore authentication
-        if (action.payload && action.payload.auth) {
+        if(action.payload && action.payload.auth) {
+
           const { token, user } = action.payload.auth;
           
-          // Only restore authenticated state if we have both token and user
-          if (token && user) {
+          if(token && user) {
             state.token = token;
             state.user = user;
             state.isAuthenticated = true;
             state.isLoading = false;
-            console.log("✅ Auth state rehydrated successfully");
+            console.log("Auth state rehydrated successfully");
           } else if (token && !user) {
-            // If we have token but no user, we'll fetch user data via getMe
             state.token = token;
-            state.isAuthenticated = false; // Will be set to true after getMe succeeds
+            state.isAuthenticated = false; 
             state.isLoading = false;
-            console.log("⚠️ Token restored but no user data - will fetch via getMe");
+            console.log("Token restored but no user data - will fetch via getMe");
           } else {
-            // No valid data to restore
             state.isAuthenticated = false;
             state.isLoading = false;
-            console.log("ℹ️ No auth state to rehydrate");
+            console.log("No auth state to rehydrate");
           }
         }
       })

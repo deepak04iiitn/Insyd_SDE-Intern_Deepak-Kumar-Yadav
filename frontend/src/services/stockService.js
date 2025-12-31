@@ -64,37 +64,32 @@ api.interceptors.response.use(
   }
 );
 
-// Get available stock with pagination, sorting, filtering, and searching
+
 export const getAvailableStock = async (params = {}) => {
   const response = await api.get("/stock/available", { params });
   return response;
 };
 
-// Get out of stock items with pagination, sorting, filtering, and searching
 export const getOutOfStock = async (params = {}) => {
   const response = await api.get("/stock/out-of-stock", { params });
   return response;
 };
 
-// Get single stock item
 export const getStockById = async (id) => {
   const response = await api.get(`/stock/${id}`);
   return response;
 };
 
-// Add new stock item
 export const addStock = async (stockData) => {
   const response = await api.post("/stock", stockData);
   return response;
 };
 
-// Update stock item
 export const updateStock = async (id, stockData) => {
   const response = await api.put(`/stock/${id}`, stockData);
   return response;
 };
 
-// Delete stock item
 export const deleteStock = async (id) => {
   const response = await api.delete(`/stock/${id}`);
   return response;
